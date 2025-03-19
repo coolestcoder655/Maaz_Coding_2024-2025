@@ -1,0 +1,7 @@
+Employee: John Doe: 555-555-5555: 100000
+Developer: Jane Smith: 555-555-5556: 120000: ["Python", "Java", "C++"]
+Manager: Alice Johnson: 555-555-5557: 130000: ["Jane Smith", "John Doe"]
+CEO: Bob Brown: 555-555-5558: 150000: [Alice Johnson]: Floormart
+Janitor: Charlie Davis: 555-555-5559: 40000: []
+SecurityGuard: Eve Wilson: 555-555-5560: 50000: []
+ITSupport: Frank Miller: 555-555-5561: 60000

@@ -1,0 +1,96 @@
+{
+    "products": {
+        "apples": {
+            "price": 0.65,
+            "quantity": 4000
+        },
+        "bananas": {
+            "price": 0.50,
+            "quantity": 4800
+        },
+        "oranges": {
+            "price": 0.75,
+            "quantity": 3200
+        },
+        "grapes": {
+            "price": 2.00,
+            "quantity": 2000
+        },
+        "strawberries": {
+            "price": 3.00,
+            "quantity": 3435
+        },
+        "blueberries": {
+            "price": 4.00,
+            "quantity": 1500
+        },
+        "pears": {
+            "price": 1.25,
+            "quantity": 3000
+        },
+        "watermelons": {
+            "price": 5.00,
+            "quantity": 800
+        },
+        "pineapples": {
+            "price": 3.50,
+            "quantity": 1000
+        },
+        "mangoes": {
+            "price": 1.75,
+            "quantity": 2500
+        },
+        "kiwis": {
+            "price": 2.50,
+            "quantity": 1800
+        },
+        "peaches": {
+            "price": 2.00,
+            "quantity": 2200
+        },
+        "plums": {
+            "price": 2.25,
+            "quantity": 1600
+        },
+        "cherries": {
+            "price": 6.00,
+            "quantity": 900
+        },
+        "lemons": {
+            "price": 0.75,
+            "quantity": 3500
+        },
+        "limes": {
+            "price": 0.85,
+            "quantity": 3400
+        },
+        "pomegranates": {
+            "price": 2.75,
+            "quantity": 1200
+        },
+        "papayas": {
+            "price": 3.25,
+            "quantity": 1100
+        },
+        "coconuts": {
+            "price": 4.50,
+            "quantity": 700
+        },
+        "figs": {
+            "price": 5.00,
+            "quantity": 600
+        },
+        "dates": {
+            "price": 3.00,
+            "quantity": 1300
+        },
+        "apricots": {
+            "price": 2.50,
+            "quantity": 1400
+        },
+        "nectarines": {
+            "price": 2.75,
+            "quantity": 1500
+        }
+    }
+}

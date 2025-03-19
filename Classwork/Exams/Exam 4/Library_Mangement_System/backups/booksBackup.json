@@ -1,0 +1,52 @@
+{
+    "books": {
+        "978-3-16-148410-0": {
+            "title": "Introduction to Python",
+            "author": "Mckinley Jackson",
+            "bookStatus": true,
+            "borrower": null
+        },
+        "978-0-13-110362-7": {
+            "title": "The C Programming Language",
+            "author": "Brian W. Kernighan, Dennis M. Ritchie",
+            "bookStatus": false,
+            "borrower": "John Doe"
+        },
+        "978-0-262-03384-8": {
+            "title": "Introduction to Algorithms",
+            "author": "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
+            "bookStatus": true,
+            "borrower": null
+        },
+        "978-1-491-94728-2": {
+            "title": "Learning JavaScript Design Patterns",
+            "author": "Addy Osmani",
+            "bookStatus": true,
+            "borrower": null
+        },
+        "978-1-59327-584-6": {
+            "title": "Automate the Boring Stuff with Python",
+            "author": "Al Sweigart",
+            "bookStatus": false,
+            "borrower": "Jane Smith"
+        },
+        "978-0-596-52068-7": {
+            "title": "JavaScript: The Good Parts",
+            "author": "Douglas Crockford",
+            "bookStatus": true,
+            "borrower": null
+        },
+        "978-1-491-94728-3": {
+            "title": "You Don't Know JS: Scope & Closures",
+            "author": "Kyle Simpson",
+            "bookStatus": true,
+            "borrower": null
+        },
+        "978-1-491-94728-4": {
+            "title": "Eloquent JavaScript",
+            "author": "Marijn Haverbeke",
+            "bookStatus": false,
+            "borrower": "Alice Johnson"
+        }
+    }
+}
