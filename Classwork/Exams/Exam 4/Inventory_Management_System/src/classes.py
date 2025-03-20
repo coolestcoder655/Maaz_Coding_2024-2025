@@ -42,10 +42,14 @@ class Inventory():
             quantity = kwargs.get("quantity", None)
         else:
             quantity = None
+        
+        product = self.products.get(name, None)
+        product["quantity"]
+
 
         self.products[name] = {
-            "price": price if price is not None else self.products[name].get("price", 0),
-            "quantity": quantity if quantity is not None else self.products[name].get("quantity", 0)
+            "price": price if price is not None else product["price"],
+            "quantity": quantity if quantity is not None else quantity["quantity"]
         }
 
     def calculateTotalValue(self):

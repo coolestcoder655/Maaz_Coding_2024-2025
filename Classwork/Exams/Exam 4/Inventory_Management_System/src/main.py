@@ -98,8 +98,8 @@ try:
 
             inventory.updateProduct(
                 newName,
-                editPrice if editPrice else print("", end=""),
-                editQuantity if editQuantity else print("", end="")
+                price=editPrice,
+                quantity=editQuantity
             )
 
         elif userChoice == 3:
