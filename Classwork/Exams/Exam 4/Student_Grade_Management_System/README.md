@@ -22,6 +22,9 @@ The Student Grade Management System is a Python application that allows users to
 
 ## Example
 ```python
+
+from classes import Student
+
 # Example of creating students and managing grades
 myStudent1 = Student("Maaz", "Khokhar", {"english": 50, "spanish": 60})
 myStudent2 = Student("John", "Doe", {"math": 75, "science": 85})

@@ -78,7 +78,7 @@ try:
             while True:
 
 
-                editQuantityChoice = input("Change Price?: (y/n) ")
+                editQuantityChoice = input("Change Quantity?: (y/n) ")
                 editQuantityChoice = editQuantityChoice.upper()
 
                 if editQuantityChoice == "Y":
@@ -98,8 +98,8 @@ try:
 
             inventory.updateProduct(
                 newName,
-                editPrice if editPrice == True else print("", end=""),
-                editQuantity if editQuantity == True else print("", end="")
+                editPrice if editPrice else print("", end=""),
+                editQuantity if editQuantity else print("", end="")
             )
 
         elif userChoice == 3:

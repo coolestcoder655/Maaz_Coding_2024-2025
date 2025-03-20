@@ -14,7 +14,7 @@ class Student():
                 return student
         raise Exception
 
-    def __init__(self, firstName, lastName, grades: dict = dict({})):
+    def __init__(self, firstName, lastName, grades: dict = dict()):
         self.firstName = firstName
         self.lastName = lastName
         self.grades = grades
@@ -34,6 +34,7 @@ class Student():
     def removeGrade(self, courseName: str):
         if not courseName in self.grades:
             print("Grade Not Located In Gradebook.")
+            raise ValueError
         else:
             self.grades.pop(courseName, None)
     
@@ -43,9 +44,12 @@ class Student():
     def calculateAverage(self):
         total = 0
         length = len(self.grades)
-        for grade in self.grades.values():
-            total += grade
+        total = sum(self.grades.values())
         return float(total / length)
+    
+    @staticmethod
+    def makeIntIfInt():
+        pass
     
 
 print(Style.BRIGHT + Fore.GREEN + "Welcome To The Student Grade Management System!!!")
@@ -53,6 +57,7 @@ print(Style.BRIGHT + Fore.GREEN + "=============================================
 
 student = None
 
+debug = False # ADD
 
 myStudent1 = Student(
     "Maaz", 

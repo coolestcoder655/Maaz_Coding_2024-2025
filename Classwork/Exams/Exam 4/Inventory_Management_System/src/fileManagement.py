@@ -1,6 +1,6 @@
 from json import load, dump
 
-filePath = "products.json"
+filePath = r"C:\Users\khokh\OneDrive\Documents\Maaz_Coding_2024-2025\Classwork\Exams\Exam 4\Inventory_Management_System\products.json"
 
 def truncateFile() -> None:
     with open(filePath, "w") as file:
