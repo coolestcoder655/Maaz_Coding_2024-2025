@@ -53,33 +53,15 @@ class TypingBot():
         loginInput = self.driver.find_element(By.ID, "username")
         loginInput.send_keys(username + Keys.TAB + passcode + Keys.ENTER)
 
-
-        element = self.driver.find_element("xpath", "//div[text()='Typing.com']")
-        self.driver.execute_script("arguments[0].scrollIntoView();", element)
-
         WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Typing.com"))
+            EC.presence_of_all_elements_located((By.CLASS_NAME, "cl-focusable cl-app app-margin ng-star-inserted"))
         )
 
-        typingapp = self.driver.find_element(By.PARTIAL_LINK_TEXT, "Typing.com")
-        typingapp.click()
-
-        """
-        WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "left-icon ng-untouched ng-pristine ng-valid"))
-        )
-
-        appInput = self.driver.find_element(By.CLASS_NAME, "left-icon ng-untouched ng-pristine ng-valid")
-        appInput.send_keys("Typing.com")
-
-        WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Typing.com"))
-        )
-
-        typingAppLink = self.driver.find_element(By.PARTIAL_LINK_TEXT, "Typing.com")
-        typingAppLink.click()"
-
-        """
+        appElements = self.driver.find_elements(By.CLASS_NAME, "cl-focusable cl-app app-margin ng-star-inserted")
+        for app in appElements:
+            if app.location == "Typing.com":    # FIX THIS-
+                app.click()
+                break
 
 
 bot = TypingBot()
