@@ -1,0 +1,5 @@
+.completedTasks {
+    opacity: 0.5;
+    color: lightgray;
+    text-decoration: line-through;
+}
