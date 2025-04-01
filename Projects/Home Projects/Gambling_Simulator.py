@@ -1,4 +1,4 @@
-import random
+from random import randint 
 
 jackpot = 0
 guessingMachineTimesWon = 0
@@ -9,8 +9,8 @@ hackingSoftwareActive = True
 def guessingMachine(jackpot1):
     MAX = 2
     while jackpot1 != 10:
-        number = random.randint(1, MAX)
-        if hackingSoftwareActive == True:
+        number = randint(1, MAX)
+        if hackingSoftwareActive:
             print("Activating Network Rerouter & Accsessing Servers \n Winning Number: ", number)
         print("Choose a number between 1 and ", MAX)
         userGamblingOption = int(input())
@@ -23,12 +23,12 @@ def guessingMachine(jackpot1):
 
         
 def slotMachine(current_chips):
-    winningSlot = random.randint(1, 10), random.randint(1, 10), random.randint(1, 10)
+    winningSlot = randint(1, 10), randint(1, 10), randint(1, 10)
     
     input("Press Enter To Spin...")
-    slot = random.randint(1, 10), random.randint(1, 10), random.randint(1, 10)
+    slot = randint(1, 10), randint(1, 10), randint(1, 10)
     print("Your Slot: ", slot, "\n Winning Slot: ", winningSlot)
-    if slot == winningSlot or hackingSoftwareActive == True:
+    if slot == winningSlot or hackingSoftwareActive:
         current_chips += 15000
         return current_chips
 
