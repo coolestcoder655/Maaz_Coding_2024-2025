@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Apple",
+        "price": 0.5,
+        "weighted": true,
+        "weight": 1.2
+    },
+    {
+        "name": "Milk",
+        "price": 1.5,
+        "weighted": false,
+        "weight": null
+    },
+    {
+        "name": "Banana",
+        "price": 0.3,
+        "weighted": true,
+        "weight": 1.8
+    },
+    {
+        "name": "Bread",
+        "price": 2.0,
+        "weighted": false,
+        "weight": null
+    },
+    {
+        "name": "Chicken Breast",
+        "price": 5.5,
+        "weighted": true,
+        "weight": 2.5
+    }
+]
