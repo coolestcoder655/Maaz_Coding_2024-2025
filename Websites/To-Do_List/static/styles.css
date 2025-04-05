@@ -1,0 +1,21 @@
+
+.title {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    background: lawngreen;
+    color: gray;
+    font-size: 30px;
+    padding: 10px;
+}
+.completedTask {
+    text-decoration: line-through;
+    color: gray;
+    opacity: 0.5;
+}
+.taskList {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    background: red;
+}
