@@ -1,0 +1,9 @@
+.subtitle {
+    text-align: left;
+    color: gray;
+    font-weight: bold;
+    font-size: 20px;
+}
+html {
+    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
