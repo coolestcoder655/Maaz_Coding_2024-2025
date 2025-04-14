@@ -15,3 +15,7 @@ class Employee {
     }
 
 }
+
+obj = new Employee("Maaz", "Khan", 25, 100000, "Software Engineer");
+
+
