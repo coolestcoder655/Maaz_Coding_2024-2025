@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="45fda07a-057b-48e9-8bae-5a7d5f4da4a5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../Library_Management_System/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Library_Management_System/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Management_System/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Library_Management_System/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Management_System/src/modules/class.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Library_Management_System/src/modules/libraryClass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/Library_Mangement_System.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Library_Mangement_System/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../Learning/schoolProjects" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../Learning/schoolProjects" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "coolestcoder655"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/coolestcoder655/Maaz_Coding_2024-2025.git",
+    "accountId": "b934e01c-1b6b-4d74-b9d4-f113acb710cd"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="2vaepeeEgr6Jp4tebxigUF1HQOu" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/khokh/OneDrive/Documents/Maaz_Coding_2024-2025/Classwork/Exams/Exam 4/Event_Management_System",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-PY-243.26053.29" />
+        <option value="bundled-python-sdk-b1dbf8ef85a6-4df51de95216-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.26053.29" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="45fda07a-057b-48e9-8bae-5a7d5f4da4a5" name="Changes" comment="" />
+      <created>1744387795701</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744387795701</updated>
+      <workItem from="1744387796957" duration="14000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
