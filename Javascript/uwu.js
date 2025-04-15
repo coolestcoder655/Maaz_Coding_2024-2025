@@ -1,5 +1,0 @@
-function uwu() {
-    uwu();
-}
-
-uwu();

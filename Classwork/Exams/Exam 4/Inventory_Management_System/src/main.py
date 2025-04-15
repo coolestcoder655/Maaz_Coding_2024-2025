@@ -1,5 +1,5 @@
 from classes import Inventory
-from fileManagement import saveProducts, loadProducts
+from fileManagement import loadProducts
 from colorama import Fore, Style, Back, init
 from os import system
 
@@ -53,7 +53,7 @@ try:
         userChoice = askForInt()
 
         if userChoice == 1:
-            newName = input("Please Enter The Name Of The Product: ")
+            newName = input("Please Enter The Name Of The Product: ").lower()
             newPrice = askForFloat("Please Enter The Price Of The Item: ")
             newQuantity = askForInt("Please Enter The Quantity Of The Item: ")
 
@@ -117,6 +117,8 @@ try:
             inventory = inventory + (newName, newQuantity)
 
         elif userChoice == 6:
+            print("\n\n" + colors[5] + styles[0] + "Current Inventory:")
+            print(colors[5] + styles[0] + "===================\n\n")
             print(inventory.__str__())
 
         elif userChoice == 0:
@@ -126,6 +128,5 @@ try:
 except KeyboardInterrupt:
     print("Forced Keyboard Quit: Exiting...") 
     
-    
-    
+
 del inventory

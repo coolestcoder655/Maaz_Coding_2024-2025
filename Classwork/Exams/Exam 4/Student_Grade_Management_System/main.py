@@ -1,4 +1,5 @@
-from colorama import Style, Fore, init
+from colorama import Style, Fore, Back, init
+from os import system, name
 
 init(autoreset=True)
 
@@ -18,17 +19,37 @@ class Student():
         self.firstName = firstName
         self.lastName = lastName
         self.grades = grades
-        __class__.students.append(self)
+        Student.students.append(self)
 
 
     @property
     def fullName(self):
         return f"{self.firstName} {self.lastName}"
 
-    def __str__(self):
-        return self.grades
+    def viewGrades(self):
+        for courseName, grade in self.grades.items():
+            print(f"{courseName.capitalize()}: {grade}%")
 
     def addGrade(self, courseName: str, grade: int = 100):
+        if courseName in self.grades:
+            print("Grade Already Exists In Gradebook. Would you like to overwrite it? (y/n)")
+            while True:
+                choice = input().lower()
+                if choice == "y":
+                    break
+                elif choice == "n":
+                    return
+                else:
+                    print("Invalid Input. Please enter 'y' or 'n'.")
+
+        if not isinstance(grade, int):
+            print("Grade Must Be An Integer.")
+            return
+        
+        if grade < 0 or grade > 100:
+            print("Grade Must Be Between 0 and 100.")
+            return
+
         self.grades[courseName] = grade
 
     def removeGrade(self, courseName: str):
@@ -45,19 +66,25 @@ class Student():
         total = 0
         length = len(self.grades)
         total = sum(self.grades.values())
-        return float(total / length)
+        if Student.isInt(total / length):
+            return int(total / length)
+        else:
+            return round(total / length, 2)
     
     @staticmethod
-    def makeIntIfInt():
-        pass
+    def isInt(num: float):
+        return num == int(num)
     
+def clearOutput():
+    system("cls" if name == "nt" else "clear")
 
-print(Style.BRIGHT + Fore.GREEN + "Welcome To The Student Grade Management System!!!")
-print(Style.BRIGHT + Fore.GREEN + "=================================================")
+def space(times: int = 1):
+    for i in range(times):
+        print()
 
 student = None
 
-debug = False # ADD
+debug = False
 
 myStudent1 = Student(
     "Maaz", 
@@ -100,6 +127,10 @@ myStudent5 = Student(
     }
 )
 
+clearOutput()
+
+print(Style.BRIGHT + Fore.GREEN + "Welcome To The Student Grade Management System!!!")
+print(Style.BRIGHT + Fore.GREEN + "=================================================")
 
 while True:
     if student == None:
@@ -113,12 +144,25 @@ while True:
                 print("Incorrect Formatting.")
             except Exception:
                 print("Student Not Recognized.")
-    colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
+        space(2)
+
+    if not debug:
+        clearOutput()
+
+
+    colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE]
+
+    print(Fore.GREEN + f"Welcome {student.fullName}!")
+    space(1)
+
     print(colors[0] + "1. Add A Grade.")
     print(colors[1] + "2. Remove A Grade.")
     print(colors[2] + "3. Modify A Grade.")
     print(colors[3] + "4. Calculate Average.")
     print(colors[4] + "5. Change Student.")
+    print(colors[5] + "6. View Grades.")
+    print(colors[6] + "7. View Classmates.")
+    print(Back.RED + "Press Ctrl + C To Exit The Program at ANY TIME.")
     userChoice = int(input("Enter Your Choice: "))
     if userChoice == 1:
         courseName = input("Enter The Name Of The Course: ")
@@ -146,8 +190,13 @@ while True:
     elif userChoice == 5:
         student = None
     elif userChoice == 6:
-        print(student.grades)
+        student.viewGrades()
     elif userChoice == 7:
         print([classmate.fullName for classmate in Student.students])
     elif userChoice == 0:
         break
+
+    input("Press Enter To Continue...")
+
+    if not debug:
+        clearOutput()
