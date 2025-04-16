@@ -1,10 +1,19 @@
-import pyautogui
+from pynput.keyboard import Controller, Key
+import threading
+import time
 
-pyautogui.FAILSAFE = False
-pyautogui.PAUSE = 0
+keyboard = Controller()
 
-pyautogui.moveTo(320, 320)
+# Spam left and right keys at warp speed
+def spam_arrows():
+    while True:
+        keyboard.press(Key.left)
+        keyboard.release(Key.left)
+        keyboard.press(Key.right)
+        keyboard.release(Key.right)
 
-while True:
-    pyautogui.press("left")
-    pyautogui.press("right")
+# Run spammer in a separate thread so it doesn’t block
+thread = threading.Thread(target=spam_arrows)
+thread.start()
+
+print("🚀 Arrow spammer started")
