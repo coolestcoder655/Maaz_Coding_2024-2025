@@ -4,12 +4,18 @@
 
 from datetime import date
 
-def birthDayCalculator(birthdayYear: int, birthdayMonth: int, birthdayDay: int) -> int:
+def birthDayCalculator(birthdayMonth: int, birthdayDay: int) -> int:
     format = "%d%m%Y"
 
-    today = int(date.strftime(date.today(), format=format))
-    birthday = int(date.strftime(date(year=birthdayYear, month=birthdayMonth, day=birthdayDay), format=format))
+    todayStriped = int(date.strftime(date.today(), format=format))
+    birthday = int(date.strftime(date(year=date.today().year, month=birthdayMonth, day=birthdayDay), format=format))
 
-    return birthday - today
+    timeLeft = birthday - todayStriped
 
-print(birthDayCalculator(2012, 1, 24))
+    timeLeft = str(timeLeft)
+
+    timeLeft = date(day=int(timeLeft[:2]), month=int(timeLeft[2:4]), year=int(timeLeft[4:]))
+
+    return timeLeft
+
+print(birthDayCalculator(1, 24))
