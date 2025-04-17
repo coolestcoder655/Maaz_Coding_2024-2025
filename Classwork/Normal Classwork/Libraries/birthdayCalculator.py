@@ -4,12 +4,12 @@
 
 from datetime import date
 
-def birthdayCalculator(inputMonth: int, inputDay: int):
-    today = date.today()
-    birthday = date.today()
-    birthday = birthday.replace(year=)
+def birthDayCalculator(birthdayYear: int, birthdayMonth: int, birthdayDay: int) -> int:
+    format = "%d%m%Y"
 
-    print(today - birthday)
+    today = int(date.strftime(date.today(), format=format))
+    birthday = int(date.strftime(date(year=birthdayYear, month=birthdayMonth, day=birthdayDay), format=format))
 
+    return birthday - today
 
-birthdayCalculator()
+print(birthDayCalculator(2012, 1, 24))
