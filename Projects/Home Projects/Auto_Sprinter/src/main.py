@@ -9,8 +9,6 @@ def spam_arrows():
     while True:
         keyboard.press(Key.left)
         keyboard.release(Key.left)
-        keyboard.press(Key.right)
-        keyboard.release(Key.right)
 
 # Run spammer in a separate thread so it doesn’t block
 thread = threading.Thread(target=spam_arrows)
