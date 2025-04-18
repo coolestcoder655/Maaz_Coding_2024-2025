@@ -2,11 +2,16 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import simpledialog, messagebox
 
-def openFile(window: tk.Tk, textEdit: tk.Text):
-    global filePath
-    filePath = askopenfilename(filetypes=[("Text Files", "*.txt"), ("Python Files", "*.py"), ("TypeScript Files", "*.ts"), ("Javascript Files", "*.js")])
+currentOpenFile = None
 
-    if not filePath:
+def openFile(window: tk.Tk, textEdit: tk.Text):
+    filePath = askopenfilename(filetypes=[("Text Files", "*.txt"), ("Python Files", "*.py"), ("TypeScript Files", "*.ts"), ("Javascript Files", "*.js")])
+    global currentOpenFile
+    currentOpenFile = filePath
+
+    if filePath == " ":
+        messagebox.askokcancel("No File", "No file has been opened.")
+        currentOpenFile = None
         return
     
     textEdit.delete(1.0, tk.END)
@@ -28,7 +33,7 @@ def saveFile(window: tk.Tk, textEdit: tk.Text):
 
     window.title(f"Opened File: {filePath}")
 
-def createNewFile(window: tk.Tk, textEdit: tk.Text, filePath):
+def createNewFile(window: tk.Tk, textEdit: tk.Text):
     newfileName = simpledialog.askstring("New File Name?", "Please enter the new file name.")
 
     try:
@@ -39,8 +44,8 @@ def createNewFile(window: tk.Tk, textEdit: tk.Text, filePath):
         messagebox.showerror("ERROR: FILE EXISTS", message=f)
 
 def isFileChanged(textEdit: tk.Text):
-    global filePath
-    with open(filePath, "r") as file:
+    global currentOpenFile
+    with open(currentOpenFile, "r") as file:
         original = file.read()
 
     modified = textEdit.get(1.0, tk.END)
@@ -64,14 +69,22 @@ def isFileChanged(textEdit: tk.Text):
         return False
 
 def onCloseConfirmation(window: tk.Tk, textEdit: tk.Text):
-    if isFileChanged(textEdit=textEdit):
-        if messagebox.askyesno("Confirm Exit.", "Are you sure you want to exit without saving?"):
-            window.destroy()
+    global currentOpenFile
+    if not currentOpenFile is None:
+        if isFileChanged(textEdit=textEdit):
+            if messagebox.askyesno("Confirm Exit.", "Are you sure you want to exit without saving?"):
+                currentOpenFile = None
+                window.destroy()
+                return
+            else:
+                return
         else:
+            currentOpenFile = None
+            window.destroy()
             return
     else:
         window.destroy()
-    
+        return
 
 
 
@@ -85,12 +98,13 @@ def main():
     textEdit.grid(row=0, column=1)
 
     frame = tk.Frame(window, relief=tk.RAISED, bd=2)
-    saveButton = tk.Button(frame, text="Save", command=lambda: openFile(window=window, textEdit=textEdit))
+    saveButton = tk.Button(frame, text="Save", command=lambda: saveFile(window=window, textEdit=textEdit))
     openButton = tk.Button(frame, text="Open", command=lambda: openFile(window=window, textEdit=textEdit))
     newFileButton = tk.Button(frame, text="New File", command=lambda: createNewFile(window=window, textEdit=textEdit))
 
     saveButton.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
     openButton.grid(row=1, column=0, padx=5, pady=5, sticky="ew")
+    newFileButton.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
     frame.grid(row=0, column=0, sticky="ns")
 
     window.bind("<Control-s>", func=lambda x: saveFile(window=window, textEdit=textEdit))
