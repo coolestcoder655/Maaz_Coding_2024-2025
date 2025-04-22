@@ -1,7 +1,7 @@
-const convertButton: HTMLButtonElement = document.getElementById('convertButton') as HTMLButtonElement;
-const inputArea: HTMLTextAreaElement = document.getElementById('inputTextArea') as HTMLTextAreaElement;
-const resultArea: HTMLTextAreaElement = document.getElementById('outputTextArea') as HTMLTextAreaElement;
-const optionSelect: HTMLSelectElement = document.getElementById('optionSelect') as HTMLSelectElement;
+const convertButton: HTMLButtonElement = document.getElementById('convert-button') as HTMLButtonElement;
+const inputArea: HTMLTextAreaElement = document.getElementById('input') as HTMLTextAreaElement;
+const resultArea: HTMLTextAreaElement = document.getElementById('result') as HTMLTextAreaElement;
+const optionSelect: HTMLSelectElement = document.getElementById('unit-select') as HTMLSelectElement;
 
 
 function convert(): void {
