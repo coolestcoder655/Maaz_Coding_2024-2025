@@ -16,7 +16,7 @@ class User:
 
     # Get/View Methods
 
-    def getAverageCalories(self) -> (int, float):
+    def getAverageCalories(self) -> int | float:
         if len(self.workoutSessions) == 0:
             raise Exception("No workout sessions found. Please add.")
 

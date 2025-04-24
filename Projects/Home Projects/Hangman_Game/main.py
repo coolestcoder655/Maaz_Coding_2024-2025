@@ -1,5 +1,6 @@
 from words import easyWords, mediumWords, hardWords
 from bigVariables import hangMans
+from utilties import clearOutput
 from typing import Union
 from time import sleep
 
@@ -9,7 +10,7 @@ def getHangman(tries) -> Union[None, str]:          # Returns The Respective Han
     global crossedOutLetters
     global letters
     global correctLetters
-    global testing
+    global debug
 
     for key in list(hangMans.keys()):
         if key == tries:
@@ -22,7 +23,7 @@ def getRandomWord(difficulty: str) -> Union[None, str]:     # Gets A Random Word
     global crossedOutLetters
     global letters
     global correctLetters
-    global testing
+    global debug
 
     difficulty = difficulty.lower()
     try:
@@ -44,7 +45,7 @@ def crossOutLetter(crossedOut: str) -> None:                #                   
     global crossedOutLetters
     global letters
     global correctLetters
-    global testing
+    global debug
 
     if len(crossedOut) != 1:
         print(f"An Error Occured. \n Please Contact Developer. Error Code: F2-01")
@@ -62,7 +63,7 @@ def getHint():
     global crossedOutLetters
     global letters
     global correctLetters
-    global testing
+    global debug
     
     index = letters.find("_")
     if index != -1:
@@ -77,16 +78,10 @@ def revealLetter(crossedOut):
     global crossedOutLetters
     global letters
     global correctLetters
-    global testing
+    global debug
 
     index = correctLetters.find(crossedOut)
     return replaceAtIndex(letters, index, crossedOut)
-
-
-def clearOutput() -> None:                                  # Clears The Output Of The Terminal             {}
-    from os import system
-    system("cls")
-
 
 # Variables
 
@@ -94,8 +89,7 @@ global keyboard
 global crossedOutLetters
 global letters
 global correctLetters
-global testing
-testing = True
+global debug
 tries = 1
 
 keyboard = """
@@ -110,7 +104,9 @@ crossedOutLetters = {
     "z": "̶z̶", "x": "̶x̶", "c": "̶c̶", "v": "̶v̶", "b": "̶b̶", "n": "̶n̶", "m": "̶m̶"
 }
 
+debug = True
 
+clearOutput()
 print("Welcome to Digital Hangman!!!")
 
 # Initalization
@@ -153,9 +149,11 @@ clearOutput()
 print("Can Quit Game. (Control + C)")
 
 while True:
+
+    if debug:
+        print(f"Correct Word: {correctLetters}")
+
     try:
-        if testing == True:
-            print(f"Correct Word: {correctLetters}")
         if tries == 6:
             print("Lost. The Correct Word Was...")
             sleep(1.5)

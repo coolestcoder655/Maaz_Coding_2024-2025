@@ -14,9 +14,7 @@ input()
 letters = giveHint(letters)
 print(letters)
 
-input()
-letters = giveHint(letters)
-print(letters)
+letters = "L_k_"
 
 input()
 letters = giveHint(letters)
