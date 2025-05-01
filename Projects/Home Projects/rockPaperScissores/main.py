@@ -1,5 +1,4 @@
-choices = ["🪨", "✂️", "📄"]
-
+import random
 from os import system as terminal
 from os import name
 
@@ -7,6 +6,7 @@ from os import name
 wins = 0
 running = True
 sudoMode = False
+choices = ["🪨", "✂️", "📄"]
 
 while running:
     terminal("cls" if name == "nt" else "clear")
@@ -52,7 +52,7 @@ while running:
             user_choice = choices[int(choice)]
             print(f"You chose: {user_choice}")
 
-            import random
+
             computer_choice = random.choice(choices)
             print(f"Computer chose: {computer_choice}")
 

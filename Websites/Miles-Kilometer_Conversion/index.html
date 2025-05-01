@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="static/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h1>Miles/Kilometer Conversion</h1>
+
+    <form id="conversion-form">
+        <label for="conversion-type">Choose conversion type:</label>
+        <select id="conversion-type" name="conversion-type">
+            <option value="miles-to-kilometers">Miles to Kilometers</option>
+            <option value="kilometers-to-miles">Kilometers to Miles</option>
+        </select>
+        <br><br>
+        <label for="input-value">Enter value:</label>
+        <input type="number" id="input-value" name="input-value" required>
+        <br><br>
+        <button type="submit">Convert</button>
+    </form>
+
+    <br><br>
+
+    <label for="resultArea">Result:</label>
+    <input type="text" readonly id="resultArea">
+
+    <script src="static/scripts.js"></script>
+</body>
+</html>
