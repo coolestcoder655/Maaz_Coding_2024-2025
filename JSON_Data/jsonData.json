@@ -1,0 +1,39 @@
+{
+    "books": [
+        {
+            "title": "To Kill a Mockingbird",
+            "author": "Harper Lee",
+            "genre": "Fiction",
+            "publishedYear": 1960,
+            "ISBN": "978-0-06-112008-4"
+        },
+        {
+            "title": "1984",
+            "author": "George Orwell",
+            "genre": "Dystopian",
+            "publishedYear": 1949,
+            "ISBN": "978-0-452-28423-4"
+        },
+        {
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald",
+            "genre": "Classic",
+            "publishedYear": 1925,
+            "ISBN": "978-0-7432-7356-5"
+        },
+        {
+            "title": "Pride and Prejudice",
+            "author": "Jane Austen",
+            "genre": "Romance",
+            "publishedYear": 1813,
+            "ISBN": "978-0-19-953556-9"
+        },
+        {
+            "title": "The Catcher in the Rye",
+            "author": "J.D. Salinger",
+            "genre": "Fiction",
+            "publishedYear": 1951,
+            "ISBN": "978-0-316-76948-0"
+        }
+    ]
+}

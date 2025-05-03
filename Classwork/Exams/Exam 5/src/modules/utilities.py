@@ -1,4 +1,4 @@
-def turnIntoInt(num) -> (int, float):
+def turnIntoInt(num) -> int | float:
     if num == int(num):
         return int(num)
     else:
