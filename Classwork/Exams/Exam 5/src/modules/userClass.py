@@ -11,7 +11,7 @@ class User:
     # Add Methods
 
     def addWeight(self, newWeight: float) -> None:
-        self.weightLog.append(newWeight, today)
+        self.weightLog.append(newWeight)
 
     def addWorkout(self, typeOfWorkout: str, duration: float, calories: int) -> None:
         # Store workouts in a consistent, simpler format
@@ -78,10 +78,10 @@ class User:
             weights.append(weight)
             yPositions.append(weight + offset)
 
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         ax.plot(months[0 : len(weights)], weights, linestyle="dashed", color="red", marker="o", linewidth=2)
-        ax.set_xlabel("Time - Months", fontsize=16, fontweight="bold")
-        ax.set_ylabel("Weight - Kilograms", fontsize=16, fontweight="bold")
+        ax.set_xlabel(r'$\bf{Time}$ $\it{(Months)}$', fontsize=16)
+        ax.set_ylabel(r'$\bf{Weight}$ $\it{(Kilograms)}$', fontsize=16)
         
         for weight in weights:
             ax.text(months[yPositions.index(weight + offset)], yPositions[weights.index(weight)], f"{round(weights[weights.index(weight) - 1] - weight, 2)})", fontsize=10)
