@@ -14,31 +14,33 @@
 # On “Yes”, show a thank you message.
 
 import tkinter as tk
-from tkinter import messagebox as mb
+from tkinter.messagebox import askyesno, showinfo  # type: ignore
+
+from typing import Any
 from json import dump
+
 
 root = tk.Tk()
 root.title('Food Delivery App')
 root.geometry('300x425')
 
-def checkout():
-    global milk, bread, eggs, nameEntry, addressEntry
+from typing import Any
 
-    def makeInt(num: float):
-        if int(num) == num:
-            return int(num)
-        else:
-            return num
-\
+def makeInt(num: float) -> float | int:
+    if int(num) == num:
+        return int(num)
+    else:
+        return num
 
-    menu = {
-        'milk': 2,
+def checkout() -> None:
+    menu: dict[str, float] = {
+        'milk': 2.0,
         'bread': 1.5,
-        'eggs': 3,
-        'fruits': 4
+        'eggs': 3.0,
+        'fruits': 4.0
     }
 
-    sumOfList = set()
+    total: float = 0.0
 
     isMilk = milk.get()
     isEggs = eggs.get()
@@ -47,39 +49,46 @@ def checkout():
     name = nameEntry.get()
     address = addressEntry.get()
 
-    if isMilk:
-        sumOfList.add(milkQuantity.get() * menu.get('milk', 0))
+    try:
+        milk_qty = int(milkQuantity.get()) if isMilk else 0
+    except ValueError:
+        milk_qty = 0
+    try:
+        bread_qty = int(breadQuantity.get()) if isBread else 0
+    except ValueError:
+        bread_qty = 0
+    try:
+        eggs_qty = int(eggsQuantity.get()) if isEggs else 0
+    except ValueError:
+        eggs_qty = 0
+    try:
+        fruits_qty = int(fruitsQuantity.get()) if isFruits else 0
+    except ValueError:
+        fruits_qty = 0
 
-    if isBread:
-        sumOfList.add(breadQuantity.get() * menu.get('bread', 0))
-
-    if isEggs:
-        sumOfList.add(eggsQuantity.get() * menu.get('eggs', 0))
-
-    if isFruits:
-        sumOfList.add(fruitsQuantity.get() * menu.get('fruits', 0))
-
-    total = sum(sumOfList)
-    
-    confirm = mb.askyesno(title='Confirm Order', message=f'Would you like to confirm this order?\nTotal: {total}')
+    total += milk_qty * menu['milk']
+    total += milk_qty * menu['milk']
+    total += bread_qty * menu['bread']
+    total += eggs_qty * menu['eggs']
+    total += fruits_qty * menu['fruits']
+    confirm = askyesno(title='Confirm Order', message=f'Would you like to confirm this order?\nTotal: {total}')
     if confirm:
-        mb.showinfo(title='Order Place', message='Your order has been placed. Thank you!')
-        receipt = {
+        showinfo(title='Order Place', message='Your order has been placed. Thank you!')
+        receipt: dict[str, Any] = {
             'name': name,
             'address': address,
             'total': total,
         }
-
-        with open('receipt.json', w) as file:
-            file.write('')
-            dump(file, receipt)
-
+        with open('receipt.json', 'w') as file:
+            dump(receipt, file)
 # Name + Address
 tk.Label(root, text='Name:').pack()
-nameEntry = tk.Entry(root).pack()
+nameEntry = tk.Entry(root)
+nameEntry.pack()
 
 tk.Label(root, text='Address:').pack()
-addressEntry = tk.Entry(root).pack()
+addressEntry = tk.Entry(root)
+addressEntry.pack()
 
 # Product Selection
 milk = tk.BooleanVar(value=True)
@@ -87,28 +96,27 @@ bread = tk.BooleanVar(value=True)
 eggs = tk.BooleanVar(value=True)
 fruits = tk.BooleanVar(value=True)
 
-tk.Checkbutton(root, text="Milk ($2)", variable=milk, ).pack()
-if milk.get():
-    tk.Label(root, text='How Much?:').pack()
-    milkQuantity = tk.Entry(root).pack()
+tk.Checkbutton(root, text="Milk ($2)", variable=milk).pack()
+tk.Label(root, text='How Much?:').pack()
+milkQuantity = tk.Entry(root)
+milkQuantity.pack()
 
-tk.Checkbutton(root, text="Bread ($1.50)", variable=bread, ).pack()
-if bread.get():
-    tk.Label(root, text='How Much?:').pack()
-    breadQuantity = tk.Entry(root).pack()
+tk.Checkbutton(root, text="Bread ($1.50)", variable=bread).pack()
+tk.Label(root, text='How Much?:').pack()
+breadQuantity = tk.Entry(root)
+breadQuantity.pack()
 
-tk.Checkbutton(root, text="Eggs ($3)", variable=eggs, ).pack()
-if eggs.get():
-    tk.Label(root, text='How Much?:').pack()
-    eggsQuantity = tk.Entry(root).pack()
+tk.Checkbutton(root, text="Eggs ($3)", variable=eggs).pack()
+tk.Label(root, text='How Much?:').pack()
+eggsQuantity = tk.Entry(root)
+eggsQuantity.pack()
 
-tk.Checkbutton(root, text="Fruits ($4)", variable=fruits, ).pack()
-if fruits.get():
-    tk.Label(root, text='How Much?:').pack()
-    fruitsQuantity = tk.Entry(root).pack()
+tk.Checkbutton(root, text="Fruits ($4)", variable=fruits).pack()
+tk.Label(root, text='How Much?:').pack()
+fruitsQuantity = tk.Entry(root)
+fruitsQuantity.pack()
 
 # Submit
-tk.Button(root, text='Submit', command=checkout, ).pack()
-
+tk.Button(root, text='Submit', command=checkout).pack()
 
 root.mainloop()
