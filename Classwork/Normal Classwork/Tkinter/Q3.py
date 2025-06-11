@@ -33,6 +33,8 @@ def makeInt(num: float) -> float | int:
         return num
 
 def checkout() -> None:
+    global nameEntry, addressEntry, milk, eggs, bread, fruits
+
     menu: dict[str, float] = {
         'milk': 2.0,
         'bread': 1.5,
@@ -67,13 +69,12 @@ def checkout() -> None:
         fruits_qty = 0
 
     total += milk_qty * menu['milk']
-    total += milk_qty * menu['milk']
     total += bread_qty * menu['bread']
     total += eggs_qty * menu['eggs']
     total += fruits_qty * menu['fruits']
     confirm = askyesno(title='Confirm Order', message=f'Would you like to confirm this order?\nTotal: {total}')
     if confirm:
-        showinfo(title='Order Place', message='Your order has been placed. Thank you!')
+        showinfo(title='Order Placed', message='Your order has been placed. Thank you!')
         receipt: dict[str, Any] = {
             'name': name,
             'address': address,
@@ -81,42 +82,46 @@ def checkout() -> None:
         }
         with open('receipt.json', 'w') as file:
             dump(receipt, file)
-# Name + Address
-tk.Label(root, text='Name:').pack()
-nameEntry = tk.Entry(root)
-nameEntry.pack()
 
-tk.Label(root, text='Address:').pack()
+# Name + Address
+tk.Label(root, text='Name:').grid(column=0, row=1)
+nameEntry = tk.Entry(root)
+nameEntry.grid(column=0, row=2)
+
+tk.Label(root, text='Address:').grid(column=0, row=3)
 addressEntry = tk.Entry(root)
-addressEntry.pack()
+addressEntry.grid(column=0, row=4)
+
+def toggleInput(entry: tk.Entry, label: tk.Label, variable: tk.BooleanVar, row: int):
+    if variable.get():
+        label.grid(column=0, row=row + 1)
+        entry.grid(column=0, row=row + 1)
+    else:
+        label.grid_forget()
+        entry.grid_forget()
 
 # Product Selection
-milk = tk.BooleanVar(value=True)
-bread = tk.BooleanVar(value=True)
-eggs = tk.BooleanVar(value=True)
-fruits = tk.BooleanVar(value=True)
+milk = tk.BooleanVar(value=False)
+bread = tk.BooleanVar(value=False)
+eggs = tk.BooleanVar(value=False)
+fruits = tk.BooleanVar(value=False)
 
-tk.Checkbutton(root, text="Milk ($2)", variable=milk).pack()
-tk.Label(root, text='How Much?:').pack()
+tk.Checkbutton(root, text="Milk ($2)", command=lambda: toggleInput(milkQuantity, milkLabel,  milk, 6), variable=milk).grid(column=0, row=5)
+milkLabel =  tk.Label(root, text='How Much?:')
 milkQuantity = tk.Entry(root)
-milkQuantity.pack()
 
-tk.Checkbutton(root, text="Bread ($1.50)", variable=bread).pack()
-tk.Label(root, text='How Much?:').pack()
+tk.Checkbutton(root, text="Bread ($1.50)", command=lambda: toggleInput(breadQuantity, breadLabel, bread, 9), variable=bread).grid(column=0, row=8)
+breadLabel = tk.Label(root, text='How Much?:')
 breadQuantity = tk.Entry(root)
-breadQuantity.pack()
 
-tk.Checkbutton(root, text="Eggs ($3)", variable=eggs).pack()
-tk.Label(root, text='How Much?:').pack()
+tk.Checkbutton(root, text="Eggs ($3)", command=lambda: toggleInput(eggsQuantity, eggsLabel, eggs, 12), variable=eggs).grid(column=0, row=11)
+eggsLabel = tk.Label(root, text='How Much?:')
 eggsQuantity = tk.Entry(root)
-eggsQuantity.pack()
 
-tk.Checkbutton(root, text="Fruits ($4)", variable=fruits).pack()
-tk.Label(root, text='How Much?:').pack()
+tk.Checkbutton(root, text="Fruits ($4)", command=lambda: toggleInput(fruitsQuantity, fruitsLabel, fruits, 15), variable=fruits).grid(column=0, row=14)
+fruitsLabel = tk.Label(root, text='How Much?:')
 fruitsQuantity = tk.Entry(root)
-fruitsQuantity.pack()
 
 # Submit
-tk.Button(root, text='Submit', command=checkout).pack()
-
+tk.Button(root, text='Submit', command=checkout).grid(column=0, row=17)
 root.mainloop()
