@@ -23,6 +23,7 @@ from json import dump
 root = tk.Tk()
 root.title('Food Delivery App')
 root.geometry('300x425')
+root.configure(bg='lightblue')
 
 from typing import Any
 
@@ -84,18 +85,18 @@ def checkout() -> None:
             dump(receipt, file)
 
 # Name + Address
-tk.Label(root, text='Name:').grid(column=0, row=1)
+tk.Label(root, text='Name:').grid(padx=30, pady=30, column=5, row=1)
 nameEntry = tk.Entry(root)
-nameEntry.grid(column=0, row=2)
+nameEntry.grid(padx=30, pady=30, column=5, row=2)
 
-tk.Label(root, text='Address:').grid(column=0, row=3)
+tk.Label(root, text='Address:').grid(padx=30, pady=30, column=5, row=3)
 addressEntry = tk.Entry(root)
-addressEntry.grid(column=0, row=4)
+addressEntry.grid(padx=30, pady=30, column=5, row=4)
 
 def toggleInput(entry: tk.Entry, label: tk.Label, variable: tk.BooleanVar, row: int):
     if variable.get():
-        label.grid(column=0, row=row + 1)
-        entry.grid(column=0, row=row + 1)
+        label.grid(padx=30, pady=30, column=5, row=row + 1)
+        entry.grid(padx=30, pady=30, column=5, row=row + 1)
     else:
         label.grid_forget()
         entry.grid_forget()
@@ -106,22 +107,22 @@ bread = tk.BooleanVar(value=False)
 eggs = tk.BooleanVar(value=False)
 fruits = tk.BooleanVar(value=False)
 
-tk.Checkbutton(root, text="Milk ($2)", command=lambda: toggleInput(milkQuantity, milkLabel,  milk, 6), variable=milk).grid(column=0, row=5)
+tk.Checkbutton(root, text="Milk ($2)", command=lambda: toggleInput(milkQuantity, milkLabel,  milk, 6), variable=milk).grid(padx=30, pady=30, column=5, row=5)
 milkLabel =  tk.Label(root, text='How Much?:')
 milkQuantity = tk.Entry(root)
 
-tk.Checkbutton(root, text="Bread ($1.50)", command=lambda: toggleInput(breadQuantity, breadLabel, bread, 9), variable=bread).grid(column=0, row=8)
+tk.Checkbutton(root, text="Bread ($1.50)", command=lambda: toggleInput(breadQuantity, breadLabel, bread, 9), variable=bread).grid(padx=30, pady=30, column=5, row=8)
 breadLabel = tk.Label(root, text='How Much?:')
 breadQuantity = tk.Entry(root)
 
-tk.Checkbutton(root, text="Eggs ($3)", command=lambda: toggleInput(eggsQuantity, eggsLabel, eggs, 12), variable=eggs).grid(column=0, row=11)
+tk.Checkbutton(root, text="Eggs ($3)", command=lambda: toggleInput(eggsQuantity, eggsLabel, eggs, 12), variable=eggs).grid(padx=30, pady=30, column=5, row=11)
 eggsLabel = tk.Label(root, text='How Much?:')
 eggsQuantity = tk.Entry(root)
 
-tk.Checkbutton(root, text="Fruits ($4)", command=lambda: toggleInput(fruitsQuantity, fruitsLabel, fruits, 15), variable=fruits).grid(column=0, row=14)
+tk.Checkbutton(root, text="Fruits ($4)", command=lambda: toggleInput(fruitsQuantity, fruitsLabel, fruits, 15), variable=fruits).grid(padx=30, pady=30, column=5, row=14)
 fruitsLabel = tk.Label(root, text='How Much?:')
 fruitsQuantity = tk.Entry(root)
 
 # Submit
-tk.Button(root, text='Submit', command=checkout).grid(column=0, row=17)
+tk.Button(root, text='Submit', command=checkout).grid(padx=30, pady=30, column=5, row=17)
 root.mainloop()
