@@ -5,17 +5,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
+from json import load
 
 # Setup Chrome WebDriver
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 
 # Read credentials from file
-with open("downloadLatestLesson\confidential.txt", "r") as file:
-    lines = [line.strip() for line in file]
-
-username = lines[0]
-password = lines[1]
+with open(r"downloadLatestLesson\confidential.json", "r") as file:
+    credentials = load(file)
+    username = credentials["email"]
+    password = credentials["password"]
 
 # Open OneDrive login page
 driver.get("https://onedrive.live.com/")
