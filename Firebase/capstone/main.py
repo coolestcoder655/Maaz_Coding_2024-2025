@@ -1,10 +1,10 @@
 from firebase_admin import firestore, initialize_app
 from firebase_admin.credentials import Certificate
-from classes import Student, Exam
-from datetime import date
+from classes import Student
+import tkinter as tk
 
 # Firebase Init
-cred = Certificate(r"capstone\examAccount.json")
+cred = Certificate(r"examAccount.json")
 initialize_app(cred)
 
 db = firestore.client().collection('students')
@@ -25,7 +25,7 @@ def addStudent(student: Student):
         'grade': student.grade,
     }
     db.add(studentData)
-    studentRef = db.where('name', '==', student.name).stream()
+    studentRef = list(db.where('name', '==', student.name).stream())
 
 
     for exam in student.exams:
@@ -35,19 +35,46 @@ def addStudent(student: Student):
             'score': exam.score,
             'subject': exam.subject,
         }
-        print(exam)
         for doc in studentRef:
             docRef = db.document(doc.id)
             docRef.collection('exams').add(exam)
-    
-        continue
 
-exams = [
-    Exam(subject="Math", score=95, exam_date=date(2024, 6, 1)),
-    Exam(subject="Science", score=88, exam_date=date(2024, 6, 5)),
-    Exam(subject="English", score=92, exam_date=date(2024, 6, 10))
-]
+    return
 
-test = Student('Jason', exams)
+def selectStudent() -> None:
+    print('Selecting Student...')
+    return
 
-addStudent(test)
+studentSelected: bool = False
+
+
+# ========================= UI ================================
+root: tk.Tk = tk.Tk()
+root.title('Capstone')
+root.geometry('500x500')
+
+
+# ===== Title =====
+titleText = 'Student Exam Preformance Tracker'
+tk.Label(root,
+        text=titleText,
+        anchor=tk.CENTER,       
+        bg="lightblue",      
+        height=3,              
+        width=30,              
+        bd=3,                  
+        font=("Arial", 12, "bold"),    
+        fg="red",                
+        justify=tk.CENTER,
+        relief=tk.RAISED,
+        underline=0,           
+        wraplength=250,
+        ).grid(column=0, row=0, columnspan=3, padx=15, pady=15, )
+root.grid_columnconfigure(0, weight=1, )
+root.grid_columnconfigure(1, weight=1, )
+root.grid_columnconfigure(2, weight=1, )
+
+# ===== Select Student Button =====
+tk.Button(root, command=selectStudent, text='View Student', cursor="hand2", ).grid(column=0, row=1, )
+
+root.mainloop()

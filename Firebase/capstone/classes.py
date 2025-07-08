@@ -25,6 +25,7 @@ class Student:
             temp.append(exam.score)
         
         self.grade = sum(temp) / len(temp)
+
         return
 
 
