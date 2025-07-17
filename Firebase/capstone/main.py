@@ -2,6 +2,8 @@ from firebase_admin import firestore, initialize_app
 from firebase_admin.credentials import Certificate
 from classes import Student
 import tkinter as tk
+from tkinter import ttk
+from typing import Optional
 
 # Firebase Init
 cred = Certificate(r"examAccount.json")
@@ -41,40 +43,64 @@ def addStudent(student: Student):
 
     return
 
-def selectStudent() -> None:
-    print('Selecting Student...')
-    return
-
-studentSelected: bool = False
+studentSelection: Optional[Student] = None
 
 
 # ========================= UI ================================
-root: tk.Tk = tk.Tk()
-root.title('Capstone')
-root.geometry('500x500')
+root = tk.Tk()
+root.title("Student Exam Performance Tracker")
+root.geometry("720x500")
+root.resizable(False, False)
 
+# --- Top Bar ---
+top_frame = tk.Frame(root, padx=10, pady=10)
+top_frame.pack(fill="x")
 
-# ===== Title =====
-titleText = 'Student Exam Preformance Tracker'
-tk.Label(root,
-        text=titleText,
-        anchor=tk.CENTER,       
-        bg="lightblue",      
-        height=3,              
-        width=30,              
-        bd=3,                  
-        font=("Arial", 12, "bold"),    
-        fg="red",                
-        justify=tk.CENTER,
-        relief=tk.RAISED,
-        underline=0,           
-        wraplength=250,
-        ).grid(column=0, row=0, columnspan=3, padx=15, pady=15, )
-root.grid_columnconfigure(0, weight=1, )
-root.grid_columnconfigure(1, weight=1, )
-root.grid_columnconfigure(2, weight=1, )
+tk.Label(top_frame, text="Select Student:").pack(side="left", padx=(0, 5))
+student_menu = ttk.Combobox(top_frame, values=["Alice Johnson"], state="readonly")
+student_menu.set("Alice Johnson")
+student_menu.pack(side="left")
 
-# ===== Select Student Button =====
-tk.Button(root, command=selectStudent, text='View Student', cursor="hand2", ).grid(column=0, row=1, )
+tk.Button(top_frame, text="Add Student").pack(side="left", padx=5)
+tk.Button(top_frame, text="Remove Student").pack(side="left", padx=5)
+
+# --- Exam Records Title and Buttons ---
+record_frame = tk.Frame(root, padx=10, pady=10)
+record_frame.pack(fill="x")
+
+btn_frame = tk.Frame(record_frame)
+btn_frame.pack(fill="x", pady=(0, 10))
+
+tk.Label(record_frame, text="Exam Records", font=("Segoe UI", 10, "bold")).pack(anchor="w")
+
+tk.Button(btn_frame, text="+ Add Exam").pack(side="left")
+tk.Button(btn_frame, text="Edit Exam").pack(side="left", padx=5)
+tk.Button(btn_frame, text="Delete Exam").pack(side="left", padx=5)
+tk.Button(btn_frame, text="View Statistics").pack(side="right")
+
+# --- Table (Static) ---
+columns = ("Subject", "Score", "Total", "Percentage", "Date", "Actions")
+tree = ttk.Treeview(record_frame, columns=columns, show="headings", height=5)
+for col in columns:
+    tree.heading(col, text=col)
+    tree.column(col, anchor="center", width=100 if col != "Actions" else 70)
+tree.pack(fill="x")
+tree.pack(fill="x")
+
+# Example static data
+tree.insert("", "end", values=("Math", "85", "100", "85.0%", "2024-01-15", "✎ 🗑"))
+tree.insert("", "end", values=("Science", "92", "100", "92.0%", "2024-01-18", "✎ 🗑"))
+
+# --- Performance Summary ---
+summary_frame = tk.Frame(root, padx=10, pady=10)
+summary_frame.pack(fill="x", pady=(15, 10))
+
+tk.Label(summary_frame, text="Average Score\n88.5%", relief="solid", padx=10, pady=10).pack(side="left", expand=True, fill="x", padx=5)
+tk.Label(summary_frame, text="Highest Score\n92.0%", relief="solid", padx=10, pady=10).pack(side="left", expand=True, fill="x", padx=5)
+tk.Label(summary_frame, text="Total Exams\n2", relief="solid", padx=10, pady=10).pack(side="left", expand=True, fill="x", padx=5)
+
+# --- Bottom Info Bar ---
+footer = tk.Label(root, text="Student: Alice Johnson       Last Updated: 2024-01-20 09:45 AM", relief="sunken", anchor="w", padx=5, pady=5)
+footer.pack(fill="x", side="bottom")
 
 root.mainloop()
