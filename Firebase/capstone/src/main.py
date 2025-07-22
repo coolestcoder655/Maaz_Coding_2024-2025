@@ -7,7 +7,7 @@ from typing import Optional
 from datetime import datetime, date
 
 # Firebase Init
-cred = Certificate(r"examAccount.json")
+cred = Certificate(r"src/examAccount.json")
 initialize_app(cred)
 
 db = firestore.client().collection('students')
@@ -255,7 +255,7 @@ def updateSummaryStats(exams, average_score, highest_percentage=0, total_exams=0
     footer.config(text=f"Student: {selected_student}       Overall Grade: {overall_grade:.1f}%       Last Updated: {current_time}")
 
 # UI Event Handlers
-def onStudentChange(event):
+def onStudentChange():
     """Handle student selection change"""
     loadStudentData()
 
@@ -543,7 +543,7 @@ top_frame.pack(fill="x")
 tk.Label(top_frame, text="Select Student:").pack(side="left", padx=(0, 5))
 student_menu = ttk.Combobox(top_frame, values=[], state="readonly")
 student_menu.pack(side="left")
-student_menu.bind("<<ComboboxSelected>>", onStudentChange)
+student_menu.bind("<<ComboboxSelected>>", onStudentChange) # type: ignore
 
 tk.Button(top_frame, text="Add Student", command=onAddStudent).pack(side="left", padx=5)
 tk.Button(top_frame, text="Remove Student", command=onRemoveStudent).pack(side="left", padx=5)
