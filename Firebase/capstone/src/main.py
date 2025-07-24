@@ -1,14 +1,95 @@
-from firebase_admin import firestore, initialize_app
-from firebase_admin.credentials import Certificate
-from classes import Student, Exam
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import Tk, Frame, Label, Button, Entry, Toplevel, messagebox
+from tkinter.messagebox import showinfo, showerror
+from tkinter.simpledialog import askstring
+from tkinter.ttk import Combobox, Treeview
+from firebase_admin import firestore, initialize_app, auth
+from firebase_admin.credentials import Certificate
+from firebase_admin.auth import UserRecord, create_user
+from classes import Student, Exam
 from typing import Optional
 from datetime import datetime, date
+from requests import post
 
-# Firebase Init
-cred = Certificate(r"src/examAccount.json")
+cred = Certificate("src/examAccount.json")
 initialize_app(cred)
+
+apiKey: str = "AIzaSyAHNzGuixFM3e5GORnyvbKoGl-NZMMkMfs"
+
+isLoggedIn: bool = False
+user: Optional[dict[str, str | bool]] = None
+
+
+def createUserViaEmail(email: str, password: str) -> UserRecord | None:
+    try:
+        user = create_user(email=email, password=password)
+        return user
+    except Exception as e:
+        print(f'|||ERROR|||:\n{e}')
+        return None
+    
+
+def loginViAEmailPassword(email: str, password: str) -> dict[str, str | bool] | bool:
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={apiKey}"
+    data: dict[str, str | bool] = {
+        "email": email,
+        "password": password,
+        "returnSecureToken": True
+    }
+
+    response = post(url, json=data)
+    responseData: dict[str, str | bool] = response.json()
+
+    if response.ok:
+        return responseData
+    
+    else:
+        print(f'Error with logging in. Please try again.')
+        return False
+
+def emailLogin() -> None:
+    dialog = tk.Toplevel(loginRoot)
+    dialog.title("Email Login")
+    dialog.geometry("300x170")
+    dialog.resizable(False, False)
+    dialog.grab_set()
+    dialog.transient(loginRoot)
+
+    # Frame for padding
+    frame = tk.Frame(dialog, padx=20, pady=15)
+    frame.pack(fill="both", expand=True)
+
+    tk.Label(frame, text="Email:", anchor="w").grid(row=0, column=0, sticky="w", pady=(0, 8))
+    email_entry = tk.Entry(frame, width=28)
+    email_entry.grid(row=0, column=1, pady=(0, 8))
+    email_entry.focus_set()  # Auto-focus on the email field
+
+    tk.Label(frame, text="Password:", anchor="w").grid(row=1, column=0, sticky="w", pady=(0, 8))
+    password_entry = tk.Entry(frame, width=28, show="*")
+    password_entry.grid(row=1, column=1, pady=(0, 8))
+    password_entry.bind("<Return>", lambda event: onLogin())
+
+    def onLogin():
+        global isLoggedIn, user
+        email = email_entry.get()
+        password = password_entry.get()
+        result = loginViAEmailPassword(email, password)
+        if isinstance(result, dict):
+            showinfo("Success", "Logged in successfully!")
+            dialog.destroy()
+            loginRoot.destroy()  # Close the login window
+            isLoggedIn = True
+            user = result
+        else:
+            showerror("Error", "Login failed. Please check your credentials.")
+
+    login_btn = tk.Button(frame, text="Login", width=18, command=onLogin)
+    login_btn.grid(row=2, column=0, columnspan=2, pady=(10, 0))
+
+def googleLogin() -> None:
+    pass
+
+# 'hello@gmail.com' '123456'
 
 db = firestore.client().collection('students')
 
@@ -261,7 +342,7 @@ def onStudentChange():
 
 def onAddStudent():
     """Handle add student button click"""
-    student_name = simpledialog.askstring("Add Student", "Enter student name:")
+    student_name = askstring("Add Student", "Enter student name:")
     if student_name and student_name.strip():
         addStudentToFirebase(student_name.strip())
 
@@ -282,7 +363,7 @@ def onAddExam():
         return
     
     # Create dialog for exam input
-    dialog = tk.Toplevel(root)
+    dialog = Toplevel(root)
     dialog.title("Add Exam")
     dialog.geometry("300x200")
     dialog.resizable(False, False)
@@ -292,21 +373,21 @@ def onAddExam():
     dialog.transient(root)
     
     # Form fields
-    tk.Label(dialog, text="Subject:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
-    subject_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Subject:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
+    subject_entry = Entry(dialog, width=20)
     subject_entry.grid(row=0, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Score:").grid(row=1, column=0, sticky="w", padx=10, pady=5)
-    score_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Score:").grid(row=1, column=0, sticky="w", padx=10, pady=5)
+    score_entry = Entry(dialog, width=20)
     score_entry.grid(row=1, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Max Score:").grid(row=2, column=0, sticky="w", padx=10, pady=5)
-    max_score_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Max Score:").grid(row=2, column=0, sticky="w", padx=10, pady=5)
+    max_score_entry = Entry(dialog, width=20)
     max_score_entry.insert(0, "100")
     max_score_entry.grid(row=2, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Date (YYYY-MM-DD):").grid(row=3, column=0, sticky="w", padx=10, pady=5)
-    date_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Date (YYYY-MM-DD):").grid(row=3, column=0, sticky="w", padx=10, pady=5)
+    date_entry = Entry(dialog, width=20)
     date_entry.insert(0, date.today().strftime("%Y-%m-%d"))
     date_entry.grid(row=3, column=1, padx=10, pady=5)
     
@@ -336,7 +417,7 @@ def onAddExam():
         except Exception as e:
             messagebox.showerror("Error", f"Invalid date format! Use YYYY-MM-DD")
     
-    tk.Button(dialog, text="Add Exam", command=submit_exam).grid(row=4, column=0, columnspan=2, pady=20)
+    Button(dialog, text="Add Exam", command=submit_exam).grid(row=4, column=0, columnspan=2, pady=20)
 
 def onEditExam():
     """Handle edit exam button click"""
@@ -355,7 +436,7 @@ def onEditExam():
         return
     
     # Create dialog for exam editing
-    dialog = tk.Toplevel(root)
+    dialog = Toplevel(root)
     dialog.title("Edit Exam")
     dialog.geometry("300x200")
     dialog.resizable(False, False)
@@ -365,23 +446,23 @@ def onEditExam():
     dialog.transient(root)
     
     # Form fields with current values
-    tk.Label(dialog, text="Subject:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
-    subject_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Subject:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
+    subject_entry = Entry(dialog, width=20)
     subject_entry.insert(0, exam_values[0])  # Current subject
     subject_entry.grid(row=0, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Score:").grid(row=1, column=0, sticky="w", padx=10, pady=5)
-    score_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Score:").grid(row=1, column=0, sticky="w", padx=10, pady=5)
+    score_entry = Entry(dialog, width=20)
     score_entry.insert(0, str(exam_values[1]))  # Current score
     score_entry.grid(row=1, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Max Score:").grid(row=2, column=0, sticky="w", padx=10, pady=5)
-    max_score_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Max Score:").grid(row=2, column=0, sticky="w", padx=10, pady=5)
+    max_score_entry = Entry(dialog, width=20)
     max_score_entry.insert(0, str(exam_values[2]))  # Current max score
     max_score_entry.grid(row=2, column=1, padx=10, pady=5)
     
-    tk.Label(dialog, text="Date (YYYY-MM-DD):").grid(row=3, column=0, sticky="w", padx=10, pady=5)
-    date_entry = tk.Entry(dialog, width=20)
+    Label(dialog, text="Date (YYYY-MM-DD):").grid(row=3, column=0, sticky="w", padx=10, pady=5)
+    date_entry = Entry(dialog, width=20)
     date_entry.insert(0, exam_values[4])  # Current date
     date_entry.grid(row=3, column=1, padx=10, pady=5)
     
@@ -411,7 +492,7 @@ def onEditExam():
         except Exception as e:
             messagebox.showerror("Error", f"Invalid date format! Use YYYY-MM-DD")
     
-    tk.Button(dialog, text="Update Exam", command=update_exam).grid(row=4, column=0, columnspan=2, pady=20)
+    Button(dialog, text="Update Exam", command=update_exam).grid(row=4, column=0, columnspan=2, pady=20)
 
 def onTreeClick(event):
     """Handle clicks on the treeview table"""
@@ -531,40 +612,62 @@ Worst Subject: {worst_subject} ({subject_avg.get(worst_subject, 0):.1f}%)
 
 
 # ========================= UI ================================
-root = tk.Tk()
+loginRoot: tk.Tk = tk.Tk()
+loginRoot.title('Login Menu')
+loginRoot.geometry('400x250')
+loginRoot.resizable(False, False)
+
+main_frame = tk.Frame(loginRoot, padx=30, pady=30)
+main_frame.pack(expand=True, fill="both")
+
+tk.Label(main_frame, text="Welcome! Please choose a login method:", font=("Arial", 13, "bold")).pack(pady=(0, 25))
+
+btn_frame = tk.Frame(main_frame)
+btn_frame.pack(pady=10)
+
+tk.Button(btn_frame, text='Login With Email + Password', width=25, command=emailLogin).pack(side='top', pady=8)
+tk.Button(btn_frame, text='Login With Google', width=25, command=googleLogin).pack(side='top', pady=8)
+
+loginRoot.mainloop()
+
+if not isLoggedIn:
+    messagebox.showerror("Error", "You must be logged in to access the main application.")
+    exit()
+
+root = Tk()
 root.title("Student Exam Performance Tracker")
 root.geometry("720x500")
 root.resizable(False, False)
 
 # --- Top Bar ---
-top_frame = tk.Frame(root, padx=10, pady=10)
+top_frame = Frame(root, padx=10, pady=10)
 top_frame.pack(fill="x")
 
-tk.Label(top_frame, text="Select Student:").pack(side="left", padx=(0, 5))
-student_menu = ttk.Combobox(top_frame, values=[], state="readonly")
+Label(top_frame, text="Select Student:").pack(side="left", padx=(0, 5))
+student_menu = Combobox(top_frame, values=[], state="readonly")
 student_menu.pack(side="left")
 student_menu.bind("<<ComboboxSelected>>", onStudentChange) # type: ignore
 
-tk.Button(top_frame, text="Add Student", command=onAddStudent).pack(side="left", padx=5)
-tk.Button(top_frame, text="Remove Student", command=onRemoveStudent).pack(side="left", padx=5)
+Button(top_frame, text="Add Student", command=onAddStudent).pack(side="left", padx=5)
+Button(top_frame, text="Remove Student", command=onRemoveStudent).pack(side="left", padx=5)
 
 # --- Exam Records Title and Buttons ---
-record_frame = tk.Frame(root, padx=10, pady=10)
+record_frame = Frame(root, padx=10, pady=10)
 record_frame.pack(fill="x")
 
-btn_frame = tk.Frame(record_frame)
+btn_frame = Frame(record_frame)
 btn_frame.pack(fill="x", pady=(0, 10))
 
-tk.Label(record_frame, text="Exam Records", font=("Segoe UI", 10, "bold")).pack(anchor="w")
+Label(record_frame, text="Exam Records", font=("Segoe UI", 10, "bold")).pack(anchor="w")
 
-tk.Button(btn_frame, text="+ Add Exam", command=onAddExam).pack(side="left")
-tk.Button(btn_frame, text="Edit Exam", command=onEditExam).pack(side="left", padx=5)
-tk.Button(btn_frame, text="Delete Exam", command=onDeleteExam).pack(side="left", padx=5)
-tk.Button(btn_frame, text="View Statistics", command=onViewStats).pack(side="right")
+Button(btn_frame, text="+ Add Exam", command=onAddExam).pack(side="left")
+Button(btn_frame, text="Edit Exam", command=onEditExam).pack(side="left", padx=5)
+Button(btn_frame, text="Delete Exam", command=onDeleteExam).pack(side="left", padx=5)
+Button(btn_frame, text="View Statistics", command=onViewStats).pack(side="right")
 
 # --- Table ---
 columns = ("Subject", "Score", "Total", "Percentage", "Date", "Actions")
-tree = ttk.Treeview(record_frame, columns=columns, show="headings", height=5)
+tree = Treeview(record_frame, columns=columns, show="headings", height=5)
 for col in columns:
     tree.heading(col, text=col)
     tree.column(col, anchor="center", width=100 if col != "Actions" else 50)
@@ -574,20 +677,20 @@ tree.pack(fill="x")
 tree.bind("<Button-1>", onTreeClick)
 
 # --- Performance Summary ---
-summary_frame = tk.Frame(root, padx=10, pady=10)
+summary_frame = Frame(root, padx=10, pady=10)
 summary_frame.pack(fill="x", pady=(15, 10))
 
-avg_label = tk.Label(summary_frame, text="Average Score\n0.0%", padx=10, pady=10)
+avg_label = Label(summary_frame, text="Average Score\n0.0%", padx=10, pady=10)
 avg_label.pack(side="left", expand=True, fill="x", padx=5)
 
-total_label = tk.Label(summary_frame, text="Total Exams\n0", padx=10, pady=10)
+total_label = Label(summary_frame, text="Total Exams\n0", padx=10, pady=10)
 total_label.pack(side="left", expand=True, fill="x", padx=5)
 
-overall_label = tk.Label(summary_frame, text="Overall Grade\n0.0%", padx=10, pady=10)
+overall_label = Label(summary_frame, text="Overall Grade\n0.0%", padx=10, pady=10)
 overall_label.pack(side="left", expand=True, fill="x", padx=5)
 
 # --- Bottom Info Bar ---
-footer = tk.Label(root, text="Student: None       Last Updated: Never", relief="sunken", anchor="w", padx=5, pady=5)
+footer = Label(root, text="Student: None       Last Updated: Never", relief="sunken", anchor="w", padx=5, pady=5)
 footer.pack(fill="x", side="bottom")
 
 # Initialize the application
