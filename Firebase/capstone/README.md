@@ -13,33 +13,40 @@ This program is designed to assist teachers in grading their student's tests.
 ## 📁 File Structure
 
 ```plaintext
-Capstone/
+capstone/
+    ├── .venv/
     ├── src/
     │   ├── __pycache__/
     │   │   ├── classes.cpython-313.pyc
+    │   │   ├── googleAuthHelper.cpython-313.pyc
+    │   │   ├── googleAuthServer.cpython-313.pyc
     │   │   └── main.cpython-313.pyc
     │   ├── classes.py
-    │   ├── main.py
-    │   └── examAccount.json
-    ├── Requirements.txt
-    └── README.md
+    │   ├── examAccount.json
+    │   ├── googleAuthHelper.py
+    │   ├── googleAuthServer.py
+    │   └── main.py
+    ├── README.md
+    └── requirements.txt
 ```
 
 ## ✨ Features
 
-- **Add A New Student**: Initalize A New Student
+- **User Authentication**: Secure login system with Google OAuth and email/password authentication
 
-- **Remove A Student**: Remove a Student When Created
+- **Add A New Student**: Initialize a new student record
 
-- **View All Exams**: View All Exams That Were Previously Entered
+- **Remove A Student**: Remove a student when no longer needed
 
-- **Add Additonal Exams**: Add Exams To A Student That Has Been Created
+- **View All Exams**: View all exams that were previously entered
 
-- **Edit/Update Exams**: Edit (Update) an Exam That Has Already Been Created
+- **Add Additional Exams**: Add exams to a student that has been created
+
+- **Edit/Update Exams**: Edit (update) an exam that has already been created
 
 - **Summary**: See a summary of the student's progress, and recognize any anomalies or improvements
 
-- **Update Student's Grade Remotely**: The program automatically updates the student's grade on the remote end, allowing other users of this program to see the changes.
+- **Real-time Updates**: The program automatically updates student grades on Firebase, allowing other users to see changes in real-time
 
 ## 🏦 Classes
 
@@ -49,7 +56,7 @@ The `Exam` class represents an exam and holds information about itself.
 
 #### Methods
 
-- `__init__(self, subject: str, score: int, max_score: int = 10`: Initializes a new exam with a subject, a score, and a max score the student could've achieved.
+- `__init__(self, subject: str, score: int, max_score: int = 100, exam_date: date = date.today())`: Initializes a new exam with a subject, score, maximum possible score (default 100), and exam date (default today).
 
 ### `Student`
 
@@ -57,58 +64,111 @@ The `Student` class represents a student and provides methods to perform various
 
 #### Methods
 
-- `__init__(self, name: str, exams: list[Exam])` Initializes a new student with a names, and a list of exams.
-- `addExam(self, toAdd: Exam)`: Add a New Exam to the Student's List of Exams
+- `__init__(self, name: str, exams: list[Exam])`: Initializes a new student with a name and a list of exams.
+- `addExam(self, toAdd: Exam)`: Add a new exam to the student's list of exams.
 
 ## 🚀 Usage
 
-To use the test management system, create instances of the `Student` class and call a method to perform various operations.
+To use the test management system, create instances of the `Student` class and call methods to perform various operations.
 
-> Before using test cases, please ensure that you are refrencing the [`examAccount.json](src/examAccount.json) correctly. This can result in an **_error_** if ignored
+> Before using the application, please ensure that you are referencing the [`examAccount.json`](src/examAccount.json) correctly. This can result in an **_error_** if ignored.
 
 ```python
 from classes import Student, Exam
+from datetime import date
+
+# Create an exam
+exam = Exam("Mathematics", 85, 100, date.today())
+
+# Create a student with exams
+student = Student("John Doe", [exam])
+
+# Add another exam
+student.addExam(Exam("Science", 92, 100))
 ```
 
 ## Dependencies
 
-> This project uses a couple dependencies to function. Please ensure that you have these installed, or use the [`requirements.txt`](requirements.txt) file to install them.
+> This project requires several dependencies to function. Please ensure that you have these installed.
 
-- _**Tkinter**_ _(Comes Pre-Installed With Python)_
-- _**Firebase Admin**_ _(Requires Installation via Python Package Manager)_
+### Required Dependencies
+
+- **Python 3.13+**
+- **Tkinter** _(Comes pre-installed with Python)_
+- **Firebase Admin SDK** _(Install via: `pip install firebase-admin`)_
+- **Flask** _(Install via: `pip install flask`)_
+- **Google Auth Libraries** _(Install via: `pip install google-auth google-auth-oauthlib google-auth-httplib2`)_
+- **Requests** _(Install via: `pip install requests`)_
+
+### Installation
+
+Install all dependencies using pip:
+
+```powershell
+pip install firebase-admin flask google-auth google-auth-oauthlib google-auth-httplib2 requests
+```
+
+Or install using the requirements file:
+
+```powershell
+pip install -r requirements.txt
+```
 
 ## 📝 Script Overview
 
-The main script [`main.py`](src/main.py) initializes the firebase-backend and provides a graphical user interface for users to interact with the system.
+The main script [`main.py`](src/main.py) initializes the Firebase backend and provides a graphical user interface for users to interact with the system. It includes authentication functionality and the main application interface.
 
-The [`classes.py`](src/classes.py) contains the `Student` class and its methods and the `Exam` class, which are used to perform various operations such as adding a student, removing a student, view all exams, adding an exam, editting an exam, and creating a summary.
+The [`classes.py`](src/classes.py) contains the `Student` and `Exam` classes with their methods, which are used to perform various operations such as adding students, managing exams, and calculating grades.
 
-The `.json` file, [`examAccount.json`](src/examAccount.json), allows the [main](src/main.py) file to interact with the firebase backend during its operation.
+The [`googleAuthHelper.py`](src/googleAuthHelper.py) provides Google OAuth authentication functionality using Flask to handle the authentication flow.
+
+The [`googleAuthServer.py`](src/googleAuthServer.py) contains additional Google authentication utilities and server functions.
+
+The `.json` file, [`examAccount.json`](src/examAccount.json), contains Firebase service account credentials that allow the application to interact with the Firebase backend during operation.
 
 ## 🛠️ How to Run
 
-You can run the bank management system in two simple steps:
+You can run the student test management system in these simple steps:
+
+### Prerequisites
+
+1. **Install Python 3.13+**: Ensure Python is installed on your system
+2. **Install Dependencies**: Install all required packages using the command provided in the Dependencies section
+3. **Firebase Setup**: Ensure your `examAccount.json` file is properly configured with valid Firebase credentials
+
+### Running the Application
 
 1. **Navigate to the Source Directory**
 
    Open PowerShell and change the directory to the `src` folder of the project. Replace `pathToTheFile` with the actual path to the `src` folder.
 
    ```powershell
-   cd "pathToTheFile"
+   cd "pathToTheFile\src"
    ```
 
 2. **Execute the Main Script**
 
-   Run the following command to start the bank management system:
+   Run the following command to start the student test management system:
 
    ```powershell
    python main.py
    ```
 
-### Running a Python File Using the Complete Path
+### Alternative: Running with Complete Path
 
-If you prefer not to navigate to the file's directory, you can run the Python script directly by providing its full path. Simply replace the path in the quotation marks with the actual location of your Python file.
+If you prefer not to navigate to the file's directory, you can run the Python script directly by providing its full path:
 
 ```powershell
-python "C:\Users\YourUsername\path\to\your\file\filename.py"
+python "C:\Users\YourUsername\path\to\your\file\src\main.py"
 ```
+
+### Authentication
+
+The application supports two authentication methods:
+
+- **Email/Password**: Standard authentication using Firebase Auth
+- **Google OAuth**: Login using your Google account
+
+## 🚧 Coming Features
+
+This application will (**_eventually_**) support filtering based on UUID for Firebase, to ensure that a student does not see their fellow students' grades.

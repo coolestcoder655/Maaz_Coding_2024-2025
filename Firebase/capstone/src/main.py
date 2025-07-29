@@ -3,13 +3,15 @@ from tkinter import Tk, Frame, Label, Button, Entry, Toplevel, messagebox
 from tkinter.messagebox import showinfo, showerror
 from tkinter.simpledialog import askstring
 from tkinter.ttk import Combobox, Treeview
-from firebase_admin import firestore, initialize_app, auth
+from firebase_admin import firestore, initialize_app
 from firebase_admin.credentials import Certificate
 from firebase_admin.auth import UserRecord, create_user
 from classes import Student, Exam
 from typing import Optional
 from datetime import datetime, date
 from requests import post
+from googleAuthServer import google_login
+from uuid import uuid4
 
 cred = Certificate("src/examAccount.json")
 initialize_app(cred)
@@ -18,11 +20,12 @@ apiKey: str = "AIzaSyAHNzGuixFM3e5GORnyvbKoGl-NZMMkMfs"
 
 isLoggedIn: bool = False
 user: Optional[dict[str, str | bool]] = None
+isDebug: bool = True
 
 
 def createUserViaEmail(email: str, password: str) -> UserRecord | None:
     try:
-        user = create_user(email=email, password=password)
+        user: UserRecord = create_user(email=email, password=password)
         return user
     except Exception as e:
         print(f'|||ERROR|||:\n{e}')
@@ -87,7 +90,26 @@ def emailLogin() -> None:
     login_btn.grid(row=2, column=0, columnspan=2, pady=(10, 0))
 
 def googleLogin() -> None:
-    pass
+    """Handle Google OAuth login"""
+    try:
+        user_data = google_login()
+        if user_data:
+            global isLoggedIn, user
+            showinfo("Success", f"Welcome {user_data['name']}! Logged in successfully with Google.")
+            loginRoot.destroy()  # Close the login window
+            isLoggedIn = True
+            user = {
+                "email": user_data["email"],
+                "name": user_data["name"],
+                "uid": user_data["uid"],
+                "idToken": user_data.get("id_token", ""),
+                "accessToken": user_data.get("access_token", ""),
+                "customToken": user_data["custom_token"]
+            }
+        else:
+            showerror("Error", "Google login failed. Please try again.")
+    except Exception as e:
+        showerror("Error", f"Google login error: {str(e)}")
 
 # 'hello@gmail.com' '123456'
 
@@ -97,21 +119,40 @@ db = firestore.client().collection('students')
 studentSelection: Optional[Student] = None
 current_student_doc_id: Optional[str] = None
 
-def loadStudentsFromFirebase():
+def loadStudentsFromFirebase() -> list[str]:
     """Load all students from Firebase"""
     try:
         students = []
+        # Load all students
         docs = db.stream()
+        
         for doc in docs:
             student_data = doc.to_dict()
-            student_name = student_data.get('name', '')
-            students.append(student_name)
+            if student_data:
+                student_name = student_data.get('name', '')
+                if student_name:
+                    students.append(student_name)
         return students
     except Exception as e:
         messagebox.showerror("Error", f"Failed to load students: {str(e)}")
         return []
+    
+def getStudentUID(studentName: str) -> Optional[str]:
+    """Get the UID of a student by their name"""
+    try:
+        studentDocs = list(db.where('name', '==', studentName).stream())
+        if studentDocs:
+            studentData = studentDocs[0].to_dict()
+            if studentData:
+                return studentData.get('UID')
+        
+        return None
+    
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to get student UID: {str(e)}")
+        return None
 
-def getStudentExams(student_name: str):
+def getStudentExams(student_name: str) -> list[tuple[Exam, str]]:
     """Get all exams for a specific student"""
     try:
         student_docs = list(db.where('name', '==', student_name).stream())
@@ -143,6 +184,7 @@ def addStudentToFirebase(student_name: str):
         studentData = {
             'name': student_name,
             'grade': 0,
+            'UID': user.get('uid', uuid4().hex) if user else uuid4().hex
         }
         db.add(studentData)
         messagebox.showinfo("Success", f"Student '{student_name}' added successfully!")
@@ -208,7 +250,7 @@ def updateExamInFirebase(exam_id: str, subject: str, score: int, max_score: int,
     except Exception as e:
         messagebox.showerror("Error", f"Failed to update exam: {str(e)}")
 
-def calculateOverallGrade():
+def calculateOverallGrade() -> float:
     """Calculate the overall grade for the current student based on all exams"""
     try:
         if not current_student_doc_id:
@@ -241,7 +283,6 @@ def updateStudentGrade():
         
         overall_grade = calculateOverallGrade()
         db.document(current_student_doc_id).update({'grade': overall_grade})
-        print(f"Student grade updated to: {overall_grade:.1f}%")
     except Exception as e:
         print(f"Error updating student grade: {str(e)}")
 
@@ -295,7 +336,7 @@ def loadStudentData():
         percentage = (exam.score / exam.max_score) * 100
         total_score += percentage
         
-        tree.insert("", "end", values=(exam.subject, exam.score,exam.max_score,f"{percentage:.1f}%",exam.exam_date.strftime("%Y-%m-%d"),"🗑"), tags=(exam_id,))
+        tree.insert("", "end", values=(exam.subject, exam.score, exam.max_score, f"{percentage:.1f}%", exam.exam_date.strftime("%Y-%m-%d"),"🗑"), tags=(exam_id,))
     
     average_score = total_score / total_exams if total_exams > 0 else 0
     
@@ -305,7 +346,7 @@ def loadStudentData():
     
     updateSummaryStats(exams, average_score, 0, total_exams)
 
-def getCurrentStudentGrade():
+def getCurrentStudentGrade() -> float:
     """Get the current student's overall grade from Firebase"""
     try:
         if not current_student_doc_id:
@@ -320,6 +361,7 @@ def getCurrentStudentGrade():
     except Exception as e:
         print(f"Error getting student grade: {str(e)}")
         return 0.0
+
 
 def updateSummaryStats(exams, average_score, highest_percentage=0, total_exams=0):
     """Update the summary statistics display"""
@@ -336,7 +378,7 @@ def updateSummaryStats(exams, average_score, highest_percentage=0, total_exams=0
     footer.config(text=f"Student: {selected_student}       Overall Grade: {overall_grade:.1f}%       Last Updated: {current_time}")
 
 # UI Event Handlers
-def onStudentChange():
+def onStudentChange(_=None):
     """Handle student selection change"""
     loadStudentData()
 
@@ -353,7 +395,7 @@ def onRemoveStudent():
         messagebox.showwarning("Warning", "No student selected!")
         return
     
-    if messagebox.askyesno("Confirm", f"Are you sure you want to remove '{selected_student}' and all their exams?"):
+    if messagebox.askyesno("Confirm", f"Are you sure you want to remove '{selected_student}' and all their exams? THIS CANNOT BE UNDONE!"):
         removeStudentFromFirebase(selected_student)
 
 def onAddExam():
@@ -406,7 +448,7 @@ def onAddExam():
             datetime.strptime(exam_date, "%Y-%m-%d")
             
             if score < 0 or score > max_score:
-                messagebox.showerror("Error", "Score must be between 0 and max score!")
+                messagebox.showerror("Error", f"Score must be between 0 and {max_score}(Max Score)!")
                 return
             
             addExamToFirebase(subject, score, max_score, exam_date)
@@ -534,23 +576,6 @@ def onDeleteExam():
     
     if messagebox.askyesno("Confirm", f"Are you sure you want to delete the {exam_values[0]} exam?"):
         deleteExamFromFirebase(exam_id)
-    """Handle delete exam button click"""
-    selected = tree.selection()
-    if not selected:
-        messagebox.showwarning("Warning", "Please select an exam to delete!")
-        return
-    
-    # Get the exam ID from tags
-    item = selected[0]
-    exam_values = tree.item(item, 'values')
-    exam_id = tree.item(item, 'tags')[0] if tree.item(item, 'tags') else None
-    
-    if not exam_id:
-        messagebox.showerror("Error", "Could not find exam ID!")
-        return
-    
-    if messagebox.askyesno("Confirm", f"Are you sure you want to delete the {exam_values[0]} exam?"):
-        deleteExamFromFirebase(exam_id)
 
 def onViewStats():
     """Handle view statistics button click"""
@@ -612,32 +637,32 @@ Worst Subject: {worst_subject} ({subject_avg.get(worst_subject, 0):.1f}%)
 
 
 # ========================= UI ================================
-loginRoot: tk.Tk = tk.Tk()
-loginRoot.title('Login Menu')
-loginRoot.geometry('400x250')
-loginRoot.resizable(False, False)
 
-main_frame = tk.Frame(loginRoot, padx=30, pady=30)
-main_frame.pack(expand=True, fill="both")
+if not isLoggedIn:
+    loginRoot: tk.Tk = tk.Tk()
+    loginRoot.title('Login Menu')
+    loginRoot.geometry('400x250')
 
-tk.Label(main_frame, text="Welcome! Please choose a login method:", font=("Arial", 13, "bold")).pack(pady=(0, 25))
+    main_frame = tk.Frame(loginRoot, padx=30, pady=30)
+    main_frame.pack(expand=True, fill="both")
 
-btn_frame = tk.Frame(main_frame)
-btn_frame.pack(pady=10)
+    tk.Label(main_frame, text="Welcome! Please choose a login method:", font=("Arial", 13, "bold")).pack(pady=(0, 25))
 
-tk.Button(btn_frame, text='Login With Email + Password', width=25, command=emailLogin).pack(side='top', pady=8)
-tk.Button(btn_frame, text='Login With Google', width=25, command=googleLogin).pack(side='top', pady=8)
+    btn_frame = tk.Frame(main_frame)
+    btn_frame.pack(pady=10)
 
-loginRoot.mainloop()
+    tk.Button(btn_frame, text='Login With Email + Password', width=25, command=emailLogin).pack(side='top', pady=8)
+    tk.Button(btn_frame, text='Login With Google', width=25, command=googleLogin).pack(side='top', pady=8)
+
+    loginRoot.mainloop()
 
 if not isLoggedIn:
     messagebox.showerror("Error", "You must be logged in to access the main application.")
     exit()
 
-root = Tk()
+root: Tk = Tk()
 root.title("Student Exam Performance Tracker")
 root.geometry("720x500")
-root.resizable(False, False)
 
 # --- Top Bar ---
 top_frame = Frame(root, padx=10, pady=10)
@@ -646,7 +671,7 @@ top_frame.pack(fill="x")
 Label(top_frame, text="Select Student:").pack(side="left", padx=(0, 5))
 student_menu = Combobox(top_frame, values=[], state="readonly")
 student_menu.pack(side="left")
-student_menu.bind("<<ComboboxSelected>>", onStudentChange) # type: ignore
+student_menu.bind("<<ComboboxSelected>>", onStudentChange)
 
 Button(top_frame, text="Add Student", command=onAddStudent).pack(side="left", padx=5)
 Button(top_frame, text="Remove Student", command=onRemoveStudent).pack(side="left", padx=5)
